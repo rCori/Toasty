@@ -40,7 +40,10 @@ public class Grid  {
 	{
 		int xClamped = CoordToGrid (x, true);
 		int zClamped = CoordToGrid (z, false);
-		d_grid [xClamped, zClamped] = 1;
+
+		if (zClamped >= 0 && xClamped >= 0) {
+			d_grid [xClamped, zClamped] = 1;
+		}
 	}
 
 
@@ -48,13 +51,14 @@ public class Grid  {
 	{
 		int xClamped = CoordToGrid (x, true);
 		int zClamped = CoordToGrid (z, false);
-		if (d_grid [xClamped, zClamped] == 1){
-			return true;
-		} 
-		else 
-		{
-			return false;
+		if (xClamped >=0 && zClamped >= 0) {
+			if (d_grid [xClamped, zClamped] == 1) {
+				return true;
+			} else {
+				return false;
+			}
 		}
+		return true;
 	}
 
 	public void UpdateCount()
@@ -78,14 +82,18 @@ public class Grid  {
 	{
 		float position = 0;
 		if (i_isXCoord) {
-			position = (d_size.x - (i_coord+(0-d_bounds.min.x))) / d_unitWidth;
+			//position = (d_size.x - (i_coord+(0-d_bounds.min.x))) / d_unitWidth;
+			position = (i_coord- d_bounds.min.x) / d_unitWidth;
 		} else {
-			position = (d_size.z - (i_coord+(0-d_bounds.min.z))) / d_unitHeight;
+			//position = (d_size.z - (i_coord+(0-d_bounds.min.z))) / d_unitHeight;
+			position = (i_coord-d_bounds.min.z) / d_unitHeight;
 		}
 
-		int clamped = Mathf.Max ((int)position, 0);
-		clamped = Mathf.Min (clamped, 9);
+		if (position > 10.0f || position < 0.0f)
+		{
+			position = -1.0f;
+		}
 
-		return clamped;
+		return (int)position;
 	}
 }
