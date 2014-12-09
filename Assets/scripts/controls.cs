@@ -11,10 +11,27 @@ public class controls : MonoBehaviour {
 
 	bool mouseIsDown;
 
+	//Keep track of the last xPosition and zPOsition of the knife to see if we are causing tears over time
+	private float xMovement;
+	private float zMovement;
+
+	//Need a timer for tears
+	private float timeLimit;
+	private float timer;
+
+	//Did a tear occur?
+	private bool isTear;
+
 	void Start()
 	{
 		grid = new Grid(bread);
 		mouseIsDown = false;
+		xMovement = 0;
+		zMovement = 0;
+		//You can only make one new tear per 3 seconds,
+		timeLimit = 3.0f;
+		timer = 0.0f;
+		isTear = false;
 	}
 
 	// Update is called once per frame
@@ -24,7 +41,18 @@ public class controls : MonoBehaviour {
 		float rayDist = 0;
 		if (restriction.Raycast (ray, out rayDist))
 		{
+			if(mouseIsDown)
+			{
+				xMovement+= Mathf.Abs(transform.position.x - ray.GetPoint(rayDist).x);
+				zMovement+= Mathf.Abs(transform.position.z - ray.GetPoint(rayDist).z);
+			}
 			transform.position = ray.GetPoint(rayDist);
+		}
+
+		timer += Time.deltaTime;
+		if(timer > timeLimit){
+			isTear = determineTear(xMovement,zMovement);
+			timer = 0.0f;
 		}
 	}
 
@@ -42,7 +70,7 @@ public class controls : MonoBehaviour {
 
 	void OnMouseDrag()
 	{
-		Vector3 butterPos = new Vector3(this.gameObject.transform.position.x,1,this.gameObject.transform.position.z + 3);
+		Vector3 butterPos = new Vector3(this.gameObject.transform.position.x,0.2f,this.gameObject.transform.position.z + 3);
 		if (!grid.CheckInCoords(butterPos.x, butterPos.z)) {
 			GameObject butter = (GameObject)Instantiate (Resources.Load ("Butter Square"));
 			butter.transform.position = butterPos;
@@ -53,18 +81,22 @@ public class controls : MonoBehaviour {
 
 	public bool DetectTear()
 	{
-		if (mouseIsDown){
-			float xMove = Mathf.Abs (Input.GetAxis ("Mouse X"));
-			float yMove = Mathf.Abs (Input.GetAxis ("Mouse Y"));
-			if(xMove >= 0.50 || yMove >= 0.50){
-				return true;
-			}else{
-				return false;
-			}
-		}
-		else{
+		if (isTear) {
+			isTear = false;
+			return true;
+		} else {
 			return false;
 		}
+	}
 
+
+	//Use this internally to do computation on wether there is a tear or not
+	bool determineTear(float xMovement, float zMovement)
+	{
+		if (xMovement >= 2.0 || zMovement >= 2.0) {
+				return true;
+		} else {
+				return false;
+		}
 	}
 }

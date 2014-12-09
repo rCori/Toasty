@@ -1,13 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class GameControler : MonoBehaviour {
 
 
 	public controls controls;
-	public GUIText score;
+	public Text count;
 	public GUIText time;
 	public GUIText tears;
+
+	public Slider butterSlider;
 
 	bool gameOver;
 
@@ -29,7 +32,7 @@ public class GameControler : MonoBehaviour {
 	void Update ()
 	{
 		if (endTime - currTime > 0) {
-			score.text = "Count is currently " + controls.grid.d_count;
+			count.text = controls.grid.d_count + "%";
 			currTime += Time.deltaTime;
 			//Implicit type conversions like a scrublord
 			time.text = "" + (endTime - currTime);
@@ -38,8 +41,7 @@ public class GameControler : MonoBehaviour {
 		}
 		else
 		{
-			score.text = "Game Over. Final score was: " + finalScore;
-			time.text = "Click to end";
+			time.text = "Game Over. Click to end";
 			gameOver = true;
 		}
 
@@ -58,5 +60,7 @@ public class GameControler : MonoBehaviour {
 				Application.LoadLevel ("titleScreen");
 			}
 		}
+
+		butterSlider.value = controls.grid.d_count;
 	}
 }
