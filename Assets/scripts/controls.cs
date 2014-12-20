@@ -29,7 +29,7 @@ public class controls : MonoBehaviour {
 		xMovement = 0;
 		zMovement = 0;
 		//You can only make one new tear per 3 seconds,
-		timeLimit = 3.0f;
+		timeLimit = 0.5f;
 		timer = 0.0f;
 		isTear = false;
 	}
@@ -51,8 +51,11 @@ public class controls : MonoBehaviour {
 
 		timer += Time.deltaTime;
 		if(timer > timeLimit){
+			Debug.Log(xMovement);
 			isTear = determineTear(xMovement,zMovement);
 			timer = 0.0f;
+			xMovement = 0.0f;
+			zMovement = 0.0f;
 		}
 	}
 
@@ -93,7 +96,7 @@ public class controls : MonoBehaviour {
 	//Use this internally to do computation on wether there is a tear or not
 	bool determineTear(float xMovement, float zMovement)
 	{
-		if (xMovement >= 2.0 || zMovement >= 2.0) {
+		if (xMovement >= 3.0 || zMovement >= 3.0) {
 				return true;
 		} else {
 				return false;

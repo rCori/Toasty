@@ -8,9 +8,10 @@ public class GameControler : MonoBehaviour {
 	public controls controls;
 	public Text count;
 	public GUIText time;
-	public GUIText tears;
 
 	public Slider butterSlider;
+	public Slider ripSlider;
+	public Text ripCount;
 
 	bool gameOver;
 
@@ -49,7 +50,8 @@ public class GameControler : MonoBehaviour {
 		bool isTear = controls.DetectTear ();
 		if (isTear) {
 			tearCount++;
-			tears.text = "Tears made in bread :" + tearCount;
+			ripSlider.value = tearCount;
+			ripCount.text = tearCount + "%";
 		}
 
 		//End the game if need be
