@@ -13,6 +13,8 @@ public class GameControler : MonoBehaviour {
 	public Slider ripSlider;
 	public Text ripCount;
 
+	public Image clock;
+
 	bool gameOver;
 
 	float currTime;
@@ -35,6 +37,7 @@ public class GameControler : MonoBehaviour {
 		if (endTime - currTime > 0) {
 			count.text = controls.grid.d_count + "%";
 			currTime += Time.deltaTime;
+			clock.fillAmount = 1 - (currTime/ endTime);
 			//Implicit type conversions like a scrublord
 			time.text = "" + (endTime - currTime);
 			finalScore = controls.grid.d_count;
