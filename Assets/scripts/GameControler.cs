@@ -7,7 +7,6 @@ public class GameControler : MonoBehaviour {
 
 	public controls controls;
 	public Text count;
-	public GUIText time;
 
 	public Slider butterSlider;
 	public Slider ripSlider;
@@ -19,9 +18,9 @@ public class GameControler : MonoBehaviour {
 
 	float currTime;
 	float endTime;
-
-	int finalScore;
+	
 	int tearCount;
+	float tearResistance;
 	// Use this for initialization
 	void Start ()
 	{
@@ -29,6 +28,8 @@ public class GameControler : MonoBehaviour {
 		endTime = 20.0f;
 		gameOver = false;
 		tearCount = 0;
+		tearResistance = 10.0f;
+		controls.SetTearResistance (tearResistance);
 	}
 	
 	// Update is called once per frame
@@ -38,14 +39,10 @@ public class GameControler : MonoBehaviour {
 			count.text = controls.grid.d_count + "%";
 			currTime += Time.deltaTime;
 			clock.fillAmount = 1 - (currTime/ endTime);
-			//Implicit type conversions like a scrublord
-			time.text = "" + (endTime - currTime);
-			finalScore = controls.grid.d_count;
 
 		}
 		else
 		{
-			time.text = "Game Over. Click to end";
 			gameOver = true;
 		}
 

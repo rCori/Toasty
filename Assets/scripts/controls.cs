@@ -21,6 +21,10 @@ public class controls : MonoBehaviour {
 
 	//Did a tear occur?
 	private bool isTear;
+	private GenerateRandButter butterGen;
+
+	//Resistance to tears
+	float tearResistance;
 
 	void Start()
 	{
@@ -32,6 +36,8 @@ public class controls : MonoBehaviour {
 		timeLimit = 0.5f;
 		timer = 0.0f;
 		isTear = false;
+		butterGen = ScriptableObject.CreateInstance<GenerateRandButter> ();
+
 	}
 
 	// Update is called once per frame
@@ -51,7 +57,6 @@ public class controls : MonoBehaviour {
 
 		timer += Time.deltaTime;
 		if(timer > timeLimit){
-			Debug.Log(xMovement);
 			isTear = determineTear(xMovement,zMovement);
 			timer = 0.0f;
 			xMovement = 0.0f;
@@ -73,9 +78,10 @@ public class controls : MonoBehaviour {
 
 	void OnMouseDrag()
 	{
-		Vector3 butterPos = new Vector3(this.gameObject.transform.position.x,0.2f,this.gameObject.transform.position.z + 3);
+		Vector3 butterPos = new Vector3(this.gameObject.transform.position.x,0.2f,this.gameObject.transform.position.z + 4);
 		if (!grid.CheckInCoords(butterPos.x, butterPos.z)) {
-			GameObject butter = (GameObject)Instantiate (Resources.Load ("Butter Square"));
+			//GameObject butter = (GameObject)Instantiate (Resources.Load ("Butter Square"));
+			GameObject butter = butterGen.createButterObj();
 			butter.transform.position = butterPos;
 			grid.SetInCoords (butterPos.x, butterPos.z);
 			grid.UpdateCount ();
@@ -92,11 +98,15 @@ public class controls : MonoBehaviour {
 		}
 	}
 
+	//We need a public interface for the GameController to set this value
+	public void SetTearResistance(float i_tearResistance){
+		tearResistance = i_tearResistance;
+	}
 
 	//Use this internally to do computation on wether there is a tear or not
 	bool determineTear(float xMovement, float zMovement)
 	{
-		if (xMovement >= 3.0 || zMovement >= 3.0) {
+		if (xMovement >= tearResistance || zMovement >= tearResistance) {
 				return true;
 		} else {
 				return false;
